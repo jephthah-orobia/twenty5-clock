@@ -1,4 +1,4 @@
-import React, { useReducer, useRef } from "react";
+import React, { useReducer, useState, useRef } from "react";
 import reducer, {
   initialState,
   DECREMENT_BREAK,
@@ -8,12 +8,21 @@ import reducer, {
   START,
   RESET,
   PAUSE,
-} from "./reducer";
-import beep from "./Assets/beep.wav";
+} from "./modules/reducer";
+import { randCol } from "./modules/random";
+import beep from "./Assets/beep1.wav";
+import style from "./TwentyNFiveApp.module.css";
 
 export default function TwentyNFiveClockApp(props) {
-  const [timer, dispatch] = useReducer(reducer, initialState);
+  const genRand = () => {
+    return {
+      "--rand-color1": randCol(),
+      "--rand-color2": randCol(),
+    };
+  };
 
+  const [timer, dispatch] = useReducer(reducer, initialState);
+  const [randBg, setRandBg] = useState(genRand());
   const audio = useRef();
 
   const playBeep = () => {
@@ -25,48 +34,62 @@ export default function TwentyNFiveClockApp(props) {
   };
 
   return (
-    <div>
+    <div className={style.container}>
       <audio src={beep} id="beep" ref={audio} preload="auto" />
-      <h1>25 + 5 Clock</h1>
-      <div>
-        <h2 id="break-label">Break Length</h2>
-        <p>
-          <button
-            id="break-decrement"
-            onClick={() => dispatch({ type: DECREMENT_BREAK })}
-          >
-            -
-          </button>
-          <span id="break-length">{timer.breakLength}</span>
-          <button
-            id="break-increment"
-            onClick={() => dispatch({ type: INCREMENT_BREAK })}
-          >
-            +
-          </button>
-        </p>
+      <div className={style.header}>
+        <h1>25 + 5 Clock</h1>
       </div>
-      <div>
-        <h2 id="session-label">Session Length</h2>
-        <p>
-          <button
-            id="session-decrement"
-            onClick={() => dispatch({ type: DECREMENT_SESSION })}
-          >
-            -
-          </button>
-          <span id="session-length">{timer.sessionLength}</span>
-          <button
-            id="session-increment"
-            onClick={() => dispatch({ type: INCREMENT_SESSION })}
-          >
-            +
-          </button>
-        </p>
+      <hr />
+      <div className={style.lengthSetters}>
+        <div>
+          <h3 id="break-label">Break Length</h3>
+          <p>
+            <button
+              id="break-decrement"
+              onClick={() => dispatch({ type: DECREMENT_BREAK })}
+              disabled={timer.isPlaying}
+            >
+              -
+            </button>
+            <span id="break-length">{timer.breakLength}</span>
+            <button
+              id="break-increment"
+              onClick={() => dispatch({ type: INCREMENT_BREAK })}
+              disabled={timer.isPlaying}
+            >
+              +
+            </button>
+          </p>
+        </div>
+        <div>
+          <h3 id="session-label">Session Length</h3>
+          <p>
+            <button
+              id="session-decrement"
+              onClick={() => dispatch({ type: DECREMENT_SESSION })}
+              disabled={timer.isPlaying}
+            >
+              -
+            </button>
+            <span id="session-length">{timer.sessionLength}</span>
+            <button
+              id="session-increment"
+              onClick={() => dispatch({ type: INCREMENT_SESSION })}
+              disabled={timer.isPlaying}
+            >
+              +
+            </button>
+          </p>
+        </div>
       </div>
-      <div>
+      <hr />
+      <div className={style.timerDisplay}>
         <h2 id="timer-label">{timer.isBreak ? "Break" : "Session"}</h2>
-        <p id="time-left">
+        <p
+          id="time-left"
+          className={timer.isPlaying ? style.animatedBg : ""}
+          style={randBg}
+        >
           {timer.currentMinute}:{timer.currentSeconds}
         </p>
         <p>
@@ -79,24 +102,39 @@ export default function TwentyNFiveClockApp(props) {
                   : {
                       type: START,
                       dispatcher: dispatch,
-                      beforeStart: stopBeep,
+                      onStart: () => {
+                        stopBeep();
+                        setRandBg(genRand());
+                      },
                       onEnd: playBeep,
                     }
               )
             }
           >
-            {timer.isPlaying ? "Pause" : "Play"}
+            {timer.isPlaying ? "Pause" : "Start"}
           </button>
           <button
             id="reset"
             onClick={() => {
-              stopBeep();
-              dispatch({ type: RESET });
+              dispatch({ type: RESET, onReset: stopBeep });
             }}
           >
             Reset
           </button>
         </p>
+      </div>
+      <hr />
+      <div>
+        <h5>Coded by:</h5>
+        <h3>
+          <a
+            href="https://github.com/jephthah-orobia"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Jephthah M. Orobia
+          </a>
+        </h3>
       </div>
     </div>
   );

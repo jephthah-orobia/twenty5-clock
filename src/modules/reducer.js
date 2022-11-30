@@ -75,13 +75,16 @@ const reducer = (state, action) => {
                 return { ...state, sessionLength: temp };
             }
             case START: {
-                action.beforeStart();
+                action.onStart();
                 return {
                     ...state,
                     isPlaying: true,
                     intervalId: setInterval(() =>
-                        action.dispatcher({ type: COUNTDOWN, onEnd: action.onEnd }),
-                        50)
+                        action.dispatcher({
+                            type: COUNTDOWN,
+                            onEnd: action.onEnd
+                        }),
+                        1000)
                 };
             }
             case RESET: {
@@ -119,7 +122,7 @@ const reducer = (state, action) => {
                 return { ...state, isPlaying: false };
             }
             case RESET: {
-                //action.afterReset();
+                action.onReset();
                 clearInterval(state.intervalId);
                 return initialState;
             }
