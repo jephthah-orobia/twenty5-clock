@@ -1,6 +1,10 @@
 # 25 + 5 Clock
 
-A sample project created by [Jephthah M. Orobia](https://github.com/jephthah-orobia) as a partial requirement for Certification of [Front End Development Libraries](https://www.freecodecamp.org/learn/front-end-development-libraries) of [freeCodeCamp.org](https://freecodecamp.org).
+## A sample project created by [Jephthah M. Orobia](https://github.com/jephthah-orobia) as a partial requirement for Certification of [Front End Development Libraries](https://www.freecodecamp.org/learn/front-end-development-libraries) of [freeCodeCamp.org](https://freecodecamp.org).
+
+## Demo:
+
+[https://jephthah-orobia.github.io/demo/25+5_clock/index.html](https://jephthah-orobia.github.io/demo/25+5_clock/index.html)
 
 ## The task:
 
